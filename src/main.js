@@ -10,7 +10,6 @@ import axios from 'axios';
 axios.defaults.baseURL = 'http://127.0.0.1:8090/api';
 //将 axios 添加到原型链上
 Vue.prototype.$http = axios;
-
 Vue.config.productionTip = false;
 
 

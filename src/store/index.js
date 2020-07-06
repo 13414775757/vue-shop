@@ -5,8 +5,12 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    activePath: '',
   },
   mutations: {
+    chengePath(state, path) {
+      this.state.activePath = path;
+    }
   },
   actions: {
   },

@@ -51,7 +51,7 @@ export default {
         // console.log(this.loginForm);
         this.$http.post('/login', this.loginForm)
         .then(result => {
-          console.log(result);
+          // console.log(result);
           if (result.data.code === 400) {
             return this.$message.error(result.data.message);
           }

@@ -1,11 +1,22 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import Main from '../components/content/Main.vue';
+import Users from '../components/content/user/Users.vue';
 
 Vue.use(VueRouter);
 
 const routes = [
   { path: '/', redirect: '/login' },  
-  { path: '/home', component: () => import('../views/Home.vue') },  
+  { 
+    path: '/home', 
+    component: () => import('../views/Home.vue'),
+    redirect: '/main',   // 默认访问是 main 
+    children: [      // 嵌套子路由
+      { path: '/main', component: Main},   
+      // 点击用户列表时展示该子路由
+      { path: '/users', component: Users},   
+    ]
+  },  
   { path: '/login', component: () => import('../components/common/Login.vue') },  
 ];
 
@@ -13,6 +24,12 @@ const router = new VueRouter({
   routes,
   mode: 'history'
 });
+
+// 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题
+const originalPush = VueRouter.prototype.push
+   VueRouter.prototype.push = function push(location) {
+   return originalPush.call(this, location).catch(err => err)
+}
 
 // 挂载路由导航守卫
 router.beforeEach((to, from, next) => {
