@@ -2,6 +2,11 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Main from '../components/content/Main.vue';
 import Users from '../components/content/user/Users.vue';
+import GoodsClass from '../components/content/goods/GoodsClass.vue';
+import GoodsList from '../components/content/goods/GoodsList.vue';
+import OrderList from '../components/content/order/OrderList.vue';
+import Finished from '../components/content/order/orderStatus/Finished.vue';
+import OrderDelivery from '../components/content/order/orderStatus/OrderDelivery.vue';
 
 Vue.use(VueRouter);
 
@@ -15,6 +20,13 @@ const routes = [
       { path: '/main', component: Main},   
       // 点击用户列表时展示该子路由
       { path: '/users', component: Users},   
+      { path: '/goodsList', component: GoodsList},   
+      { path: '/goodsClass', component: GoodsClass},   
+      { path: '/orderList', component: OrderList},   
+      { path: '/finished', component: Finished },
+      { path: '/orderDelivery', component: OrderDelivery },
+      { path: '/closed', component: () => import('../components/content/order/orderStatus/Closed.vue') },
+      { path: '/waitDelivery', component: () => import('../components/content/order/orderStatus/WaitDelivery.vue') },
     ]
   },  
   { path: '/login', component: () => import('../components/common/Login.vue') },  

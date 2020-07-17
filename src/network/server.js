@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const userApi = require('./api/userApi.js');
+const goodsApi = require('./api/goodsApi.js');
 
 //配置post请求第三方工具
 app.use(bodyParser.urlencoded({extended: false}));
@@ -16,7 +17,7 @@ app.all('*', function (req, res, next) {
   next();
 });
 
-app.use('/api', userApi);
+app.use('/api', userApi, goodsApi);
 
 module.exports = app;
 

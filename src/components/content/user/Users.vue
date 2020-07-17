@@ -2,7 +2,7 @@
   <div class="user">
     <!-- 面包屑导航 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/main' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item>首页</el-breadcrumb-item>
       <el-breadcrumb-item>用户管理</el-breadcrumb-item>
       <el-breadcrumb-item class="active">用户列表</el-breadcrumb-item>
     </el-breadcrumb>
@@ -20,12 +20,12 @@
       </el-row>
       <!--当el-table元素中注入data对象数组后，在el-table-column中用prop属性来对应对象中的键名即可填入数据 -->
       <el-table border stripe :data="usersList">
-        <el-table-column type="index" label="#"></el-table-column>
-        <el-table-column label="姓名" prop="username"></el-table-column>
-        <el-table-column label="性别" prop="user_sex"></el-table-column>
-        <el-table-column label="电话" prop="user_phone"></el-table-column>
-        <el-table-column label="邮箱" prop="user_email"></el-table-column>
-        <el-table-column label="操作">
+        <el-table-column align="center" type="index" label="#"></el-table-column>
+        <el-table-column align="center" label="姓名" prop="username"></el-table-column>
+        <el-table-column align="center" label="性别" prop="user_sex"></el-table-column>
+        <el-table-column align="center" label="电话" prop="user_phone"></el-table-column>
+        <el-table-column align="center" label="邮箱" prop="user_email"></el-table-column>
+        <el-table-column align="center" label="操作">
           <template slot-scope="scope">  
             <el-button
               size="mini"

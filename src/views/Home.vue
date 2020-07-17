@@ -148,6 +148,7 @@ export default {
   border-right: none;   /* 解决子菜单突出1px问题 */
 }
 .el-main {
-  background-color:lightgray;
+  background-color:snow;
+  height: 590px;
 }
 </style>
