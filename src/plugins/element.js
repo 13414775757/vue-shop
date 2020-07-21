@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import {Button, Form, FormItem, Input, Message, Container, Header, Main, Aside, Dropdown, DropdownMenu, DropdownItem, Menu, MenuItem, Submenu, MenuItemGroup, MessageBox, Breadcrumb, BreadcrumbItem, Card, Row, Col, Table, TableColumn, Pagination, Dialog, Select, Option, Tabs, TabPane, InfiniteScroll, Switch, Radio, RadioGroup, DatePicker, Step, Steps, Divider, Alert, Image, Tooltip} from 'element-ui';
+import {Button, Form, FormItem, Input, Message, Container, Header, Main, Aside, Dropdown, DropdownMenu, DropdownItem, Menu, MenuItem, Submenu, MenuItemGroup, MessageBox, Breadcrumb, BreadcrumbItem, Card, Row, Col, Table, TableColumn, Pagination, Dialog, Select, Option, Tabs, TabPane, InfiniteScroll, Switch, Radio, RadioGroup, DatePicker, Step, Steps, Divider, Alert, Image, Tooltip, Loading, Timeline, TimelineItem, Popover} from 'element-ui';
 
 
 Vue.use(Button);
@@ -40,7 +40,12 @@ Vue.use(Divider);
 Vue.use(Alert);
 Vue.use(Image);
 Vue.use(Tooltip);
+Vue.use(Loading.directive);
+Vue.use(Timeline);
+Vue.use(TimelineItem);
+Vue.use(Popover);
 // 对于 js 中使用的组件需要全局挂载.
 Vue.prototype.$message = Message;
 Vue.prototype.$messageBox = MessageBox;
 Vue.prototype.$InfiniteScroll = InfiniteScroll;
+Vue.prototype.$loading = Loading.service;

@@ -7,6 +7,7 @@ import './plugins/element.js';
 import TreeTable from '../node_modules/vue-table-with-tree-grid';
 //导入全局样式表
 import './assets/css/global.css';
+import moment from 'moment';
 //导入 axios 库
 import axios from 'axios';
 axios.defaults.baseURL = 'http://127.0.0.1:8090/api';
@@ -16,6 +17,13 @@ Vue.config.productionTip = false;
 // 定义价格过滤器
 Vue.filter('priceFormat', function(price) {
   return '￥' + price;
+});
+// 日期过滤器
+Vue.filter('timeFormat', function(timeStr, pattern = "YYYY-MM-DD") {
+  return moment(timeStr).format(pattern);
+});
+Vue.filter('dateFormat', function(timeStr, pattern = "YYYY-MM-DD HH:mm:ss") {
+  return moment(timeStr).format(pattern);
 });
 Vue.component('tree-table', TreeTable);
 

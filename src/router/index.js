@@ -6,7 +6,7 @@ import GoodsClass from '../components/content/goods/GoodsClass.vue';
 import GoodsList from '../components/content/goods/GoodsList.vue';
 import OrderList from '../components/content/order/OrderList.vue';
 import Finished from '../components/content/order/orderStatus/Finished.vue';
-import OrderDelivery from '../components/content/order/orderStatus/OrderDelivery.vue';
+import OrderDelivery from '../components/content/order/orderOperate/OrderDelivery.vue';
 
 Vue.use(VueRouter);
 
@@ -27,6 +27,8 @@ const routes = [
       { path: '/orderDelivery', component: OrderDelivery },
       { path: '/closed', component: () => import('../components/content/order/orderStatus/Closed.vue') },
       { path: '/waitDelivery', component: () => import('../components/content/order/orderStatus/WaitDelivery.vue') },
+      { path: '/hadDeliverOrder', component: () => import('../components/content/order/orderStatus/HadDeliverOrder.vue') },
+      { path: '/returning', component: () => import('../components/content/order/orderStatus/Returning.vue') },
     ]
   },  
   { path: '/login', component: () => import('../components/common/Login.vue') },  

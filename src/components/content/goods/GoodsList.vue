@@ -6,7 +6,7 @@
       <el-breadcrumb-item>商品管理</el-breadcrumb-item>
       <el-breadcrumb-item class="active">商品列表</el-breadcrumb-item>
     </el-breadcrumb>
-    <!-- 商品区 -->
+    <!-- 商品列表 -->
     <div class="goodsArea">
       <el-row :gutter="20" class="search">
       <el-col :span="24">

@@ -1,6 +1,7 @@
 <template>
   <div id="orderList">
     <el-card>
+      <!-- 头部区域 -->
       <el-row>
         <el-col :span="16">
           <span class="el-icon-search"></span> 筛选搜索
@@ -13,17 +14,17 @@
         </el-col>
       </el-row>
       <!-- 搜索区域 -->
-      <!-- form-item 中的 prop 属性是进行表单验证及表单重置 prop 属性值必须多余 表单输入框中的 -->
+      <!-- form-item 中的 prop 属性是进行表单验证及表单重置 prop 属性值必须等于表单输入框中的 -->
       <el-row :gutter="20" class="order-search">
         <el-form label-width="80px" :model="searchForm" ref="searchFormRef">
           <el-col :span="8">
             <el-form-item label="订单号:" prop="orderNo">
-            <el-input v-model="searchForm.orderNo" placeholder="输入订单号" ></el-input>
+            <el-input clearable v-model="searchForm.orderNo" placeholder="输入订单号" ></el-input>
           </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="收件人:" prop="addressee">
-            <el-input v-model="searchForm.addressee" placeholder="收件人姓名/手机号"></el-input>
+            <el-input clearable v-model="searchForm.addressee" placeholder="收件人姓名/手机号"></el-input>
           </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -31,13 +32,23 @@
               <el-date-picker
                 v-model="searchForm.time"
                 type="date"
-                placeholder="选择日期">
+                placeholder="选择日期"
+                value-format="yyyy-MM-dd">
               </el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="订单状态:" prop="orderStatus">
-              <el-input v-model="searchForm.orderStatus" placeholder="输入订单状态"></el-input>
+              <el-select 
+              v-model="searchForm.orderStatus" 
+              placeholder="选择订单状态"
+              :clearable="true">   
+                <el-option 
+                v-for="item in orderAllStatus" :key="item.id"
+                :label="item.status"
+                :value="item.status">   <!-- value 绑定选中的值 -->
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -80,28 +91,44 @@
       @selection-change="handleSelectionChange"
       tooltip-effect="dark">
         <el-table-column align="center" type="selection"></el-table-column>
-        <el-table-column align="center" label="订单号" prop="orderNo"></el-table-column>
-        <el-table-column align="center" label="下单时间" prop="orderTime"></el-table-column>
-        <el-table-column align="center" label="用户账户" prop="user"></el-table-column>
-        <el-table-column align="center" label="订单金额" prop="price">
+        <el-table-column align="center" label="订单号" prop="order_no"></el-table-column>
+        <el-table-column align="center" label="下单时间" prop="order_time">
           <!-- 使用过滤器 -->
           <template slot-scope="scope">
-            {{scope.row.price | priceFormat}}
+            {{scope.row.order_time | timeFormat}}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="支付方式" prop="payFor"></el-table-column>
-        <el-table-column align="center" label="订单状态" prop="orderStatus"></el-table-column>
+        <el-table-column align="center" label="用户账户" prop="username"></el-table-column>
+        <el-table-column align="center" label="订单金额" prop="order_price">
+          <!-- 使用过滤器 -->
+          <template slot-scope="scope">
+            {{scope.row.order_price | priceFormat}}
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="支付方式" prop="pay_type"></el-table-column>
+        <el-table-column align="center" label="订单状态" prop="order_status"></el-table-column>
         <el-table-column align="center" label="操作" min-width="120px">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" @click="seeOrder(scope.row)">查看订单</el-button>
             <el-button size="mini" 
-            :type="scope.row.orderStatus === '已退款' ? btnStyle[0] : btnStyle[1]" 
-            @click="operateOrder(scope.row)">
-              {{selectBtnMsg(scope.row.orderStatus)}}
+            :type="scope.row.order_status === '已退款' ? btnStyle[0] : btnStyle[1]" 
+            @click="operateOrder(scope.row)"> <!--按钮文字根据方法返回值显示-->
+              {{selectBtnMsg(scope.row.order_status)}}
             </el-button>
           </template>
         </el-table-column>
       </el-table>
+      <!-- 分页 -->
+      <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :background="true"
+      :current-page="pageInfo.pageNum"
+      :page-sizes="[3, 4, 5, 6]"
+      :page-size="pageInfo.pageSize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total">
+      </el-pagination>
     </el-card>
   </div>
 </template>
@@ -129,18 +156,56 @@ export default {
         {id: 2, label: '家用家电'},
         {id: 3, label: '手机数码'},
         {id: 4, label: '零食'},
+        {id: 5, label: '运动鞋'},
       ],
-      orderList: [   // 订单列表数据
-        { id: 1, orderNo: '202007130001', orderTime: '2020-07-13', user: 'Mike', price: 2000, payFor: '微信', orderStatus: '已退款', category: '服装', deliveryCompany: '京东快递', deliveryNo: '100002', integration: 30, phoneNum: '15233873282', orderType: '秒杀活动', deliveryAddress: '广东省惠州市惠州学院', receiveTime: '2020-07-17', postalCode: '516000'},
-        { id: 2, orderNo: '202007140002', orderTime: '2020-07-14', user: 'Jackson', price: 2000, payFor: '支付宝', orderStatus: '已完成', category: '手机数码', deliveryCompany: '天天快递', deliveryNo: '100003', integration: 30, phoneNum: '13579246855', orderType: '秒杀活动', deliveryAddress: '广东省惠州市惠州学院', receiveTime: '2020-07-17', postalCode: '516000'},
-        { id: 3, orderNo: '202007140003', orderTime: '2020-07-14', user: 'Sarah', price: 3000, payFor: '支付宝', orderStatus: '待发货', category: '家用家电', deliveryCompany: '', deliveryNo: '', integration: 30, phoneNum: '13345987632', orderType: '正常活动', deliveryAddress: '广东省惠州市惠州学院', receiveTime: '2020-07-17', postalCode: '516000'},
-        { id: 4, orderNo: '202007150004', orderTime: '2020-07-15', user: 'John', price: 3000, payFor: '银行卡', orderStatus: '退货中', category: '零食', deliveryCompany: '韵达快递', deliveryNo: '100005', integration: 30, phoneNum: '15233873282', orderType: '满减', deliveryAddress: '广东省惠州市惠州学院', receiveTime: '2020-07-17', postalCode: '516000'},
-      ],
+      orderList: [],   // 订单列表数据
       btnStyle: ['danger','info'],   // 根据订单状态，选择不同的按钮样式
       active: 0,  // 步骤条的默认步骤
+      orderAllStatus: [   // 所有订单状态
+        {id: 1, status: '已完成'}, 
+        {id: 2, status: '待发货'}, 
+        {id: 3, status: '已发货'}, 
+        {id: 4, status: '已退款'}, 
+        {id: 5, status: '退货中'}
+      ],
+      pageInfo: {
+        pageNum: 1,
+        pageSize: 4
+      },
+      total: 0,
     }
   },
+  created() {
+    this.getAllOrders();
+    this.getTotal();
+    // console.log(this.orderList);
+  },
   methods: {
+    // 获取所有订单
+    getAllOrders() {
+      this.$http.get('/getAllOrders', {params: this.pageInfo})
+      .then(result => {       
+        if (result.status !== 200) {
+          return;
+        }
+        this.orderList = result.data;
+        // console.log(this.orderList);
+      }).catch(error => {
+        return error;
+      });
+    },
+    // 获取total
+    getTotal() {
+      this.$http.get('/getTotal')
+      .then(result => {
+        if (result.status !== 200) {
+          return;
+        }
+        this.total = result.data[0].total;
+      }).catch(error => {
+        return error;
+      });
+    },
     // 重置搜索表单
     resetSearchForm() {
       // console.log(this.searchForm);
@@ -150,35 +215,34 @@ export default {
     orderListBySearchForm(searchForm) {
       let newOrderList = [];
       newOrderList = this.orderList.filter(item => {
-        if (item.orderNo.includes(searchForm.orderNo) && item.user.includes(searchForm.addressee) && item.orderStatus.includes(searchForm.orderStatus) && item.payFor.includes(searchForm.pay) && item.orderTime.includes(searchForm.time) && item.category.includes(searchForm.cate)) {
+        if (item.order_no.includes(searchForm.orderNo) && (item.username||item.receiver_phone).includes(searchForm.addressee) && item.order_status.includes(searchForm.orderStatus) && item.pay_type.includes(searchForm.pay) && item.order_time.includes(searchForm.time) && item.product_category.includes(searchForm.cate)) {
           return true;
         }
       });
-      // console.log(newOrderList);
       return newOrderList;
     },
     // 查看当前订单
     seeOrder(order) {
       // 根据不同状态，实现跳转不同位置并携带该订单信息
-      if (order.orderStatus === "待发货") {
+      if (order.order_status === "待发货") {
         this.$router.push({path: '/waitDelivery', query: {order: order}});
-      } else if (order.orderStatus === "已发货") {
-        this.$router.push({path: '/deliveried', query: {order: order}});
-      } else if (order.orderStatus === "已完成") {
+      } else if (order.order_status === "已发货") {
+        this.$router.push({path: '/hadDeliverOrder', query: {order: order}});
+      } else if (order.order_status === "已完成") {
         this.$router.push({path: '/finished', query: {order: order}});
-      } else if (order.orderStatus === "已退款") {
+      } else if (order.order_status === "已退款") {
         this.$router.push({path: '/closed', query: {order: order}});
-      } else if (order.orderStatus === "退货中") {
+      } else if (order.order_status === "退货中") {
         this.$router.push({path: '/returning', query: {order: order}})
-      }
+      } 
     },
     // 处理订单
     operateOrder(order) {
-      if (order.orderStatus === "待发货") {
+      if (order.order_status === "待发货") {
         this.$router.push({path: '/orderDelivery', query: {order: order}});
       }
-      if (order.orderStatus === "已退款") {
-        this.$messageBox('确定要删除吗?', '提示', {
+      if (order.order_status === "已退款") {
+        this.$messageBox.confirm('确定要删除吗?', '提示', {
           distinguishCancelAndClose: true,
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -193,7 +257,10 @@ export default {
           this.$message('已取消');
         });
       }
-      if (order.orderStatus === "已完成") {
+      if (order.order_status === "已完成") {
+        
+      }
+      if (order.order_status === "退货中") {
         
       }
     },
@@ -204,14 +271,23 @@ export default {
     // 根据状态确定按钮的文字
     selectBtnMsg(status) {
       if (status === "已退款") {
-        return "删除订单";
+        return "删除记录";
       } else if (status === "待发货") {
         return "订单发货"; 
       } else if (status === "已发货" || status === "已完成") {
-        return "跟踪订单"
+        return "跟踪订单";
       } else if (status === "退货中") {
-        return "订单详情"
+        return "完成退货";
       }
+    },
+    // 监听页码和每页数量事件
+    handleSizeChange(value) {
+      this.pageInfo.pageSize = value;
+      this.getAllOrders();
+    },
+    handleCurrentChange(value) {
+      this.pageInfo.pageNum = value;
+      this.getAllOrders();
     }
   }
 
@@ -234,5 +310,8 @@ export default {
   }
   .el-steps {
     margin: 10px;
+  }
+  .el-pagination {
+    margin-top: 10px;
   }
 </style>

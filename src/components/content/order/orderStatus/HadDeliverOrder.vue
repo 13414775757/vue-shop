@@ -1,50 +1,43 @@
 <template>
-  <div class="finished">
-    <!-- 订单已完成页面 -->
+  <div id="had-delivery">
     <el-card>
-      <el-tooltip effect="dark" content="返回" placement="top-start">
-        <el-button circle class="el-icon-back" @click="$router.push('/orderList')"></el-button>
-      </el-tooltip>
-      <!-- 步骤条 -->
-      <el-steps 
-      :active="4" 
+      <el-row>
+        <el-col :span="6">
+          <el-tooltip effect="dark" content="返回" placement="top" >
+            <el-button circle class="el-icon-back" @click="$router.push('/orderList')"></el-button>
+          </el-tooltip>
+          <span> 订单详情</span>
+        </el-col>
+      </el-row>
+      <el-steps
+      :active="3"
       finish-status="success"
       align-center>
-        <el-step title="提交订单" :description="orderMessage[0].order_time | dateFormat"></el-step>
-        <el-step title="支付订单" :description="orderMessage[0].pay_time | dateFormat"></el-step>
-        <el-step title="平台发货" :description="orderMessage[0].delivery_time | dateFormat"></el-step>
-        <el-step title="确认收货" :description="orderMessage[0].receive_time | dateFormat"></el-step>
+        <el-step title="提交订单" :description="orderMsg[0].order_time | dateFormat"></el-step>
+        <el-step title="订单支付" :description="orderMsg[0].pay_time | dateFormat"></el-step>
+        <el-step title="订单发货" :description="orderMsg[0].delivery_time | dateFormat"></el-step>
+        <el-step title="确认收货" description="等待确认"></el-step>
       </el-steps>
-      <el-alert
-        title="订单当前状态：已完成"
-        type="success"
-        show-icon
-        :closable="false">
-        <div class="btn-group">
-          <el-button size="mini" type="success">订单跟踪</el-button>
-          <el-button size="mini" type="primary">备注订单</el-button>
-        </div>
-      </el-alert>
       <el-divider></el-divider>
       <span class="el-icon-collection-tag"> 基本信息</span>
-      <el-table 
-      :data="orderMessage"
-      border stripe>
+      <el-table
+      :data="orderMsg"
+      border>
         <el-table-column align="center" label="订单号" prop="order_no"></el-table-column>
         <el-table-column align="center" label="用户账号" prop="username"></el-table-column>
         <el-table-column align="center" label="支付方式" prop="pay_type"></el-table-column>
         <el-table-column align="center" label="订单类型" prop="product_category"></el-table-column>
         <el-table-column align="center" label="订单备注" prop="order_note"></el-table-column>
       </el-table>
-      <el-table
+       <el-table
       class="second-table" 
-      :data="orderMessage"
+      :data="orderMsg"
       border stripe>
         <el-table-column align="center" label="配送方式" prop="delivery_company"></el-table-column>
         <el-table-column align="center" label="物流单号" prop="delivery_no"></el-table-column>
         <el-table-column align="center" label="确认收货时间" prop="receive_time">
           <template slot-scope="scope">
-            {{scope.row.receive_time | timeFormat}}
+            {{scope.row.order_status !== '已完成' ? '未确认' : (scope.row.receive_time | timeFormat)}}
           </template>
         </el-table-column>
         <el-table-column align="center" label="订单积分" prop="order_integration"></el-table-column>
@@ -53,21 +46,17 @@
       <el-divider></el-divider>
       <span class="el-icon-collection-tag"> 收件人信息</span>
       <el-table 
-      :data="orderMessage"
+      :data="orderMsg"
       border stripe>
         <el-table-column align="center" label="收件人" prop="receiver_name"></el-table-column>
         <el-table-column align="center" label="手机号码" prop="receiver_phone"></el-table-column>
         <el-table-column align="center" label="邮政编码" prop="receiver_post_code"></el-table-column>
-        <el-table-column align="center" label="收件地址" prop="receiver_province, receiver_address">
-          <template slot-scope="scope">
-            {{scope.row.receiver_province + scope.row.receiver_address}}
-          </template>
-        </el-table-column>
+        <el-table-column align="center" label="收件地址" prop="receiver_address"></el-table-column>
       </el-table>
       <el-divider></el-divider>
       <span class="el-icon-collection-tag"> 商品信息</span>
       <el-table 
-      :data="orderMessage"
+      :data="orderMsg"
       border stripe>
         <el-table-column align="center" label="商品图片" prop="product_pic">
           <template slot-scope="scope">
@@ -107,37 +96,26 @@
   export default {
     data() {
       return {
-        orderMessage: [], // 存储路由跳转携带的订单信息
+        orderMsg: [],
         total: 0,
       }
     },
     created() {
-      // 获取订单
-      this.orderMessage.push(this.$route.query.order);
-      // 获取总价钱
-      this.total = this.$route.query.order.product_count * this.$route.query.order.product_price;
-      // console.log(this.orderMessage);
+      this.orderMsg.push(this.$route.query.order);
+      this.total = this.$route.query.order.product_price * this.$route.query.order.product_count;
+      // console.log(this.orderMsg);
     },
-    methods: { 
+    methods: {
 
     }
   }
 </script>
 
 <style scoped>
-  .el-alert {
+  .el-steps {
     margin-top: 10px;
   }
-  .btn-group {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    right: 10px;
-  }
-  .el-table{
-    margin-top: 20px;
-  }
-  .second-table {
-    margin-top: 0px;
+  .el-table {
+    margin-top: 10px;
   }
 </style>

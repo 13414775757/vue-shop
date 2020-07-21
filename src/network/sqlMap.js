@@ -24,6 +24,56 @@ const sqlMap = {
     // 获取所有二级分类
     getAllSecondClasses: 'SELECT '
 
+  },
+  orders: {
+    // 获取所有订单
+    getAllOrders: `SELECT 
+    a.id, 
+    a.order_no, 
+    a.order_time, 
+    a.username, 
+    a.order_price, 
+    a.pay_type, 
+    a.order_status, 
+    a.order_type, 
+    a.order_integration, 
+    a.delivery_no, 
+    a.delivery_company, 
+    a.receiver_name, 
+    a.receiver_phone, 
+    a.receiver_province, 
+    a.receiver_address, 
+    a.receiver_post_code, 
+    a.pay_time,
+    a.delivery_time, 
+    a.receive_time, 
+    a.order_note, 
+    b.id as order_item_id, 
+    b.product_id, 
+    b.product_no, 
+    b.product_pic, 
+    b.product_name, 
+    b.product_price, 
+    b.product_brand, 
+    b.product_count, 
+    b.product_category, 
+    b.product_attr,
+    c.order_return_id, 
+    c.create_time, 
+    c.return_reason
+    FROM orders a 
+    LEFT JOIN 
+    order_item b 
+    ON 
+    a.id = b.order_id 
+    LEFT JOIN
+    order_return c
+    ON
+    a.id = c.order_id 
+    LIMIT ?, ?`,
+
+    getTotal: 'SELECT count(1) AS total FROM orders',
+    getMaxNo: 'SELECT MAX(delivery_no) AS maxNo FROM orders'
   }
 };
 

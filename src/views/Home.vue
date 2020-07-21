@@ -18,9 +18,11 @@
     <el-container>
       <!-- 侧边导航 -->
       <el-aside :width="!isCollapse ? '64px' : '200px'">
-        <div class="toggle" @click="toggleCollapse">
-          <span :class="isCollapse ? 'el-icon-s-fold' : 'el-icon-s-unfold'"></span>
-        </div>
+        <el-tooltip effect="dark" :content="isCollapse?'收起':'展开'"  :placement="isCollapse?'right':'left'">
+          <div class="toggle" @click="toggleCollapse">
+            <span :class="isCollapse ? 'el-icon-s-fold' : 'el-icon-s-unfold'"></span>
+          </div>
+        </el-tooltip>
         <!-- 侧边菜单 -->
         <!-- collapse 是否折叠 -->
         <el-menu
